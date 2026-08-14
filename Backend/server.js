@@ -2,6 +2,7 @@ const express = require("express");
 const session = require("express-session");
 const config = require("./config/env");
 const { connectDb } = require("./config/db");
+const authRoutes = require("./routes/auth.routes");
 
 const app = express();
 
@@ -12,6 +13,8 @@ app.use(
         saveUninitialized: false,
     }),
 );
+
+app.use("/auth", authRoutes);
 // Verbindung für die Anwendung beim Start mit der Datenbank
 connectDb();
 
