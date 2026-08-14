@@ -13,6 +13,11 @@ app.use(
         saveUninitialized: false,
     }),
 );
+// Liest die Daten aus HTML-Formularen
+app.use(express.urlencoded({ extended: true }));
+// Liest die JSON-Daten aus den  Anfragen
+app.use(express.json());
+
 
 app.use("/auth", authRoutes);
 // Verbindung für die Anwendung beim Start mit der Datenbank
