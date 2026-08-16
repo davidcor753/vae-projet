@@ -1,0 +1,114 @@
+const express = require("express");
+const { db } = require("../config/db");
+const { checkLogin } = require("../middleware/auth");
+
+const router = express.Router();
+// Lädt alle Geräte mit Kategorie und Standort
+router.get("/inventory", checkLogin, (req, res) => {
+    const sql = `
+        SELECT
+            items.id,
+            items.name,
+            items.serial_number,
+            category.name AS category,
+            locations.name AS location,
+            items.status,
+            items.description
+        FROM items
+        LEFT JOIN category
+            ON items.category_id = category.id
+        LEFT JOIN locations
+            ON items.location_id = locations.id
+        ORDER BY items.id DESC
+    `;
+// Erstellt ein neues Gerät
+    db.query(sql, (dbError, itemRows) => {
+        if (dbError) {
+            return res.status(500).json({ error: "Database error" });
+        }
+
+        return res.json(itemRows);
+    });
+});
+// Erstellt ein neues Gerät
+router.post("/inventory", checkLogin, (req, res) => {
+    const name = req.body.name;
+    const serialNumber = req.body.serial_number;
+    const categoryId = req.body.category_id;
+    const locationId = req.body.location_id;
+    const status = req.body.status || "En Stock";
+    const description = req.body.description;
+
+    if (!name || !serialNumber) {
+        return res.status(400).json({ error: "Missing fields" });
+    }
+    const sql = `
+    INSERT INTO items
+    (name, serial_number, category_id, location_id, status, description)
+    VALUES (?, ?, ?, ?, ?, ?)
+`;
+
+    db.query(
+        sql,
+        [name, serialNumber, categoryId, locationId, status, description],
+        (dbError) => {
+            if (dbError) {
+                return res.status(500).json({ error: "Database error" });
+            }
+
+            return res.json({ success: true });
+        },
+    );
+});
+// Aktualisiert ein bestehendes Gerät über seiner ID
+router.put("/inventory/:id", checkLogin, (req, res) => {
+    const id = req.params.id;
+
+    const name = req.body.name;
+    const serialNumber = req.body.serial_number;
+    const categoryId = req.body.category_id;
+    const locationId = req.body.location_id;
+    const status = req.body.status;
+    const description = req.body.description;
+
+    if (!name || !serialNumber || !status) {
+        return res.status(400).json({ error: "Missing fields" });
+    } const sql = `
+    UPDATE items
+    SET name = ?,
+        serial_number = ?,
+        category_id = ?,
+        location_id = ?,
+        status = ?,
+        description = ?
+    WHERE id = ?
+`;
+
+    db.query(
+        sql,
+        [name, serialNumber, categoryId, locationId, status, description, id],
+        (dbError) => {
+            if (dbError) {
+                return res.status(500).json({ error: "Database error" });
+            }
+
+            return res.json({ success: true });
+        },
+    );
+});
+// Löscht ein Gerät über die ID
+router.delete("/inventory/:id", checkLogin, (req, res) => {
+    const id = req.params.id;
+
+    const sql = "DELETE FROM items WHERE id = ?";
+
+    db.query(sql, [id], (dbError) => {
+        if (dbError) {
+            return res.status(500).json({ error: "Database error" });
+        }
+
+        return res.json({ success: true });
+    });
+});
+
+module.exports = router;

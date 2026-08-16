@@ -4,6 +4,7 @@ const config = require("./config/env");
 const { connectDb } = require("./config/db");
 const authRoutes = require("./routes/auth.routes");
 const usersRoutes = require("./routes/users.routes");
+const inventoryRoutes = require("./routes/inventory.routes");
 const app = express();
 
 app.use(
@@ -20,9 +21,10 @@ app.use(express.urlencoded({ extended: true }));
 // Liest die JSON-Daten aus den Anfragen
 app.use(express.json());
 
-// Erst danach die Authentifizierungs-Routen
+// Bindet die Routen der Anwendung ein
 app.use("/", authRoutes);
 app.use("/", usersRoutes);
+app.use("/", inventoryRoutes);
 // Verbindung für die Anwendung beim Start mit der Datenbank
 connectDb();
 
