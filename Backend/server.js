@@ -3,7 +3,7 @@ const session = require("express-session");
 const config = require("./config/env");
 const { connectDb } = require("./config/db");
 const authRoutes = require("./routes/auth.routes");
-
+const usersRoutes = require("./routes/users.routes");
 const app = express();
 
 app.use(
@@ -22,7 +22,7 @@ app.use(express.json());
 
 // Erst danach die Authentifizierungs-Routen
 app.use("/", authRoutes);
-
+app.use("/", usersRoutes);
 // Verbindung für die Anwendung beim Start mit der Datenbank
 connectDb();
 
