@@ -3,6 +3,30 @@ const { db } = require("../config/db");
 const { checkLogin } = require("../middleware/auth");
 
 const router = express.Router();
+
+function logInventoryAction(itemId, actionType, req) {
+    const sql = `
+        INSERT INTO inventaire_actions
+        (item_id, action_type, actor_user_id, actor_username)
+        VALUES (?, ?, ?, ?)
+    `;
+
+    db.query(
+        sql,
+        [
+            itemId,
+            actionType,
+            req.session.user.id,
+            req.session.user.name,
+        ],
+        (dbError) => {
+            if (dbError) {
+                console.error("Inventory log error:", dbError);
+            }
+        },
+    );
+}
+
 // Lädt alle Geräte mit Kategorie und Standort
 router.get("/inventory", checkLogin, (req, res) => {
     const sql = `
@@ -21,7 +45,7 @@ router.get("/inventory", checkLogin, (req, res) => {
             ON items.location_id = locations.id
         ORDER BY items.id DESC
     `;
-// Erstellt ein neues Gerät
+
     db.query(sql, (dbError, itemRows) => {
         if (dbError) {
             return res.status(500).json({ error: "Database error" });
@@ -30,6 +54,30 @@ router.get("/inventory", checkLogin, (req, res) => {
         return res.json(itemRows);
     });
 });
+
+// Lädt die Historie der Inventar-Aktionen
+router.get("/inventory/actions", checkLogin, (req, res) => {
+    const sql = `
+        SELECT
+            id,
+            item_id,
+            action_type,
+            actor_user_id,
+            actor_username,
+            created_at
+        FROM inventaire_actions
+        ORDER BY created_at DESC
+    `;
+
+    db.query(sql, (dbError, actionRows) => {
+        if (dbError) {
+            return res.status(500).json({ error: "Database error" });
+        }
+
+        return res.json(actionRows);
+    });
+});
+
 // Erstellt ein neues Gerät
 router.post("/inventory", checkLogin, (req, res) => {
     const name = req.body.name;
@@ -42,24 +90,28 @@ router.post("/inventory", checkLogin, (req, res) => {
     if (!name || !serialNumber) {
         return res.status(400).json({ error: "Missing fields" });
     }
+
     const sql = `
-    INSERT INTO items
-    (name, serial_number, category_id, location_id, status, description)
-    VALUES (?, ?, ?, ?, ?, ?)
-`;
+        INSERT INTO items
+        (name, serial_number, category_id, location_id, status, description)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `;
 
     db.query(
         sql,
         [name, serialNumber, categoryId, locationId, status, description],
-        (dbError) => {
+        (dbError, result) => {
             if (dbError) {
                 return res.status(500).json({ error: "Database error" });
             }
+
+            logInventoryAction(result.insertId, "create", req);
 
             return res.json({ success: true });
         },
     );
 });
+
 // Aktualisiert ein bestehendes Gerät über seiner ID
 router.put("/inventory/:id", checkLogin, (req, res) => {
     const id = req.params.id;
@@ -73,16 +125,18 @@ router.put("/inventory/:id", checkLogin, (req, res) => {
 
     if (!name || !serialNumber || !status) {
         return res.status(400).json({ error: "Missing fields" });
-    } const sql = `
-    UPDATE items
-    SET name = ?,
-        serial_number = ?,
-        category_id = ?,
-        location_id = ?,
-        status = ?,
-        description = ?
-    WHERE id = ?
-`;
+    }
+
+    const sql = `
+        UPDATE items
+        SET name = ?,
+            serial_number = ?,
+            category_id = ?,
+            location_id = ?,
+            status = ?,
+            description = ?
+        WHERE id = ?
+    `;
 
     db.query(
         sql,
@@ -92,13 +146,18 @@ router.put("/inventory/:id", checkLogin, (req, res) => {
                 return res.status(500).json({ error: "Database error" });
             }
 
+            logInventoryAction(id, "update", req);
+
             return res.json({ success: true });
         },
     );
 });
+
 // Löscht ein Gerät über die ID
 router.delete("/inventory/:id", checkLogin, (req, res) => {
     const id = req.params.id;
+
+    logInventoryAction(id, "delete", req);
 
     const sql = "DELETE FROM items WHERE id = ?";
 

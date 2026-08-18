@@ -16,7 +16,7 @@ const config = {
     
     dbPassword: process.env.DB_PASSWORD || "",
     
-    dbName: process.env.DB_NAME || "inventaire",
+    dbName: process.env.DB_NAME || "inventaire_1",
 };
 // Stellt die Konfiguration für andere Backend-Dateien bereit
 module.exports = config;
