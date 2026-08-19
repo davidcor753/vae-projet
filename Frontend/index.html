@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Inventar</title>
+</head>
+
+<body>
+
+    
+    <h1>Inventarverwaltung</h1>
+
+    
+    <h2>Geräte</h2>
+
+    <!-- Button zum Öffnen des Formulars für ein neues Gerät -->
+    <button type="button" id="add-device">
+        Neues Gerät hinzufügen
+    </button>
+
+    <!-- Tabelle zur Anzeige der Inventargeräte -->
+    <table id="inventory-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Seriennummer</th>
+                <th>Kategorie</th>
+                <th>Standort</th>
+                <th>Status</th>
+                <th>Beschreibung</th>
+                <th>Aktionen</th>
+            </tr>
+        </thead>
+
+        
+        <tbody>
+        </tbody>
+    </table>
+
+    <!-- Formular zum Erstellen und Bearbeiten eines Geräts -->
+    <div id="popup-background" style="display: none;">
+        <div id="popup-window">
+
+            <h2 id="popup-title">Gerät</h2>
+
+            <form id="popup-form">
+
+                <input type="hidden" id="device-id">
+
+                <label for="device-name">Name:</label>
+                <input type="text" id="device-name" required>
+
+                <label for="serial-number">Seriennummer:</label>
+                <input type="text" id="serial-number" required>
+
+                <!-- Kategorien aus der Datenbank -->
+                <label for="category-id">Kategorie:</label>
+                <select id="category-id" required>
+                    <option value="" disabled selected>Kategorie wählen...</option>
+                    <option value="1">Laptop</option>
+                    <option value="2">Desktop</option>
+                </select>
+
+                <!-- Standorte aus der Datenbank -->
+                <label for="location-id">Standort:</label>
+                <select id="location-id" required>
+                    <option value="" disabled selected>Standort wählen...</option>
+                    <option value="1">Bureau Directrice</option>
+                    <option value="2">Open Office Gauche</option>
+                    <option value="3">Open Office Droite</option>
+                    <option value="4">Bureau Direction Cuisine</option>
+                    <option value="5">Bureau Direction cave</option>
+                    <option value="6">Bureau Gauche</option>
+                    <option value="7">Bureau Droite</option>
+                    <option value="8">Bureau Direction</option>
+                    <option value="9">Cave</option>
+                    <option value="10">Open Space</option>
+                    <option value="11">Salle de Réunion</option>
+                </select>
+
+                <!-- Status aus der Datenbank -->
+                <label for="status">Status:</label>
+                <select id="status" required>
+                    <option value="En Stock">En Stock</option>
+                    <option value="En production">En production</option>
+                    <option value="Defaut">Defaut</option>
+                </select>
+
+                <label for="description">Beschreibung:</label>
+                <input type="text" id="description">
+
+                <button type="submit">Speichern</button>
+                <button type="button" id="cancel-btn">Abbrechen</button>
+
+            </form>
+
+        </div>
+    </div>
+
+</body>
+
+</html>
