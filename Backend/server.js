@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const path = require("path");
 const config = require("./config/env");
 const { connectDb } = require("./config/db");
 const authRoutes = require("./routes/auth.routes");
@@ -20,7 +21,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Liest die JSON-Daten aus den Anfragen
 app.use(express.json());
-
+// Stellt die Dateien aus dem Frontend-Ordner bereit
+app.use(express.static(path.join(__dirname, "../Frontend")));
 // Bindet die Routen der Anwendung ein
 app.use("/", authRoutes);
 app.use("/", usersRoutes);
