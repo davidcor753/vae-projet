@@ -127,3 +127,11 @@ addDeviceButton.addEventListener("click", () => {
   status.value = "En Stock";
   description.value = "";
 });
+// Zeigt die Benutzerverwaltung nur für Administratoren an
+fetch("/api/whoami")
+  .then((response) => response.json())
+  .then((user) => {
+    if (user.role === "admin") {
+      document.getElementById("users-link").style.display = "inline";
+    }
+  });
