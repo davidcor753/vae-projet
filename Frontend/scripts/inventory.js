@@ -1,6 +1,6 @@
 // Holt die benötigten Elemente aus der HTML-Seite
 const inventoryTableBody = document.querySelector("#inventory-table tbody");
-const popupForm = document.getElementById("popup-form");
+const deviceForm = document.getElementById("device-form");
 const deviceName = document.getElementById("device-name");
 const serialNumber = document.getElementById("serial-number");
 const categoryId = document.getElementById("category-id");
@@ -25,8 +25,7 @@ function renderInventory(data) {
             <td>${device.location}</td>
             <td>${device.status}</td>
             <td>${device.description}</td>
-            <td>
-                <td>
+      <td>    
     <button class="edit-btn" data-id="${device.id}">
         Bearbeiten
     </button>
@@ -37,12 +36,10 @@ function renderInventory(data) {
 </td>
         `;
 
-    // Öffnet das Formular mit den Daten des ausgewählten Geräts
+    // Füllt das Formular mit den Daten des ausgewählten Geräts
     const editButton = row.querySelector(".edit-btn");
     const deleteButton = row.querySelector(".delete-btn");
     editButton.addEventListener("click", () => {
-      openPopup("Gerät bearbeiten");
-
       deviceId.value = device.id;
       deviceName.value = device.name;
       serialNumber.value = device.serial_number;
@@ -81,7 +78,7 @@ function loadInventory() {
 loadInventory();
 
 // Erstellt ein neues Gerät oder aktualisiert ein bestehendes Gerät
-popupForm.addEventListener("submit", (event) => {
+deviceForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const deviceData = {
@@ -103,7 +100,6 @@ popupForm.addEventListener("submit", (event) => {
     })
       .then((response) => response.json())
       .then(() => {
-        closePopup();
         loadInventory();
       });
   } else {
@@ -116,7 +112,6 @@ popupForm.addEventListener("submit", (event) => {
     })
       .then((response) => response.json())
       .then(() => {
-        closePopup();
         loadInventory();
       });
   }
