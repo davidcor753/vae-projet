@@ -12,12 +12,12 @@ const addDeviceButton = document.getElementById("add-device");
 
 // Zeigt die geladenen Inventargeräte in der Tabelle an
 function renderInventory(data) {
-    inventoryTableBody.innerHTML = "";
+  inventoryTableBody.innerHTML = "";
 
-    data.forEach((device) => {
-        const row = document.createElement("tr");
+  data.forEach((device) => {
+    const row = document.createElement("tr");
 
-        row.innerHTML = `
+    row.innerHTML = `
             <td>${device.id}</td>
             <td>${device.name}</td>
             <td>${device.serial_number}</td>
@@ -26,91 +26,109 @@ function renderInventory(data) {
             <td>${device.status}</td>
             <td>${device.description}</td>
             <td>
-                <button class="edit-btn" data-id="${device.id}">
-                    Bearbeiten
-                </button>
-            </td>
+                <td>
+    <button class="edit-btn" data-id="${device.id}">
+        Bearbeiten
+    </button>
+
+    <button class="delete-btn" data-id="${device.id}">
+        Löschen
+    </button>
+</td>
         `;
 
-        // Öffnet das Formular mit den Daten des ausgewählten Geräts
-        const editButton = row.querySelector(".edit-btn");
+    // Öffnet das Formular mit den Daten des ausgewählten Geräts
+    const editButton = row.querySelector(".edit-btn");
+    const deleteButton = row.querySelector(".delete-btn");
+    editButton.addEventListener("click", () => {
+      openPopup("Gerät bearbeiten");
 
-        editButton.addEventListener("click", () => {
-            openPopup("Gerät bearbeiten");
-
-            deviceId.value = device.id;
-            deviceName.value = device.name;
-            serialNumber.value = device.serial_number;
-            categoryId.value = device.category_id;
-            locationId.value = device.location_id;
-            status.value = device.status;
-            description.value = device.description;
-        });
-
-        inventoryTableBody.appendChild(row);
+      deviceId.value = device.id;
+      deviceName.value = device.name;
+      serialNumber.value = device.serial_number;
+      categoryId.value = device.category_id;
+      locationId.value = device.location_id;
+      status.value = device.status;
+      description.value = device.description;
     });
+    // Löscht das ausgewählte Gerät nach Bestätigung
+    deleteButton.addEventListener("click", () => {
+      const confirmed = confirm("Möchtest du dieses Gerät wirklich löschen?");
+
+      if (confirmed) {
+        fetch(`/inventory/${device.id}`, {
+          method: "DELETE",
+        })
+          .then((response) => response.json())
+          .then(() => {
+            loadInventory();
+          });
+      }
+    });
+    inventoryTableBody.appendChild(row);
+  });
 }
 
 // Lädt die Inventargeräte aus dem Backend
 function loadInventory() {
-    fetch("/inventory")
-        .then((response) => response.json())
-        .then((data) => {
-            renderInventory(data);
-        });
+  fetch("/inventory")
+    .then((response) => response.json())
+    .then((data) => {
+      renderInventory(data);
+    });
 }
 
 loadInventory();
 
 // Erstellt ein neues Gerät oder aktualisiert ein bestehendes Gerät
 popupForm.addEventListener("submit", (event) => {
-    event.preventDefault();
+  event.preventDefault();
 
-    const deviceData = {
-        name: deviceName.value,
-        serial_number: serialNumber.value,
-        category_id: categoryId.value,
-        location_id: locationId.value,
-        status: status.value,
-        description: description.value,
-    };
+  const deviceData = {
+    name: deviceName.value,
+    serial_number: serialNumber.value,
+    category_id: categoryId.value,
+    location_id: locationId.value,
+    status: status.value,
+    description: description.value,
+  };
 
-    if (deviceId.value) {
-        fetch(`/inventory/${deviceId.value}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(deviceData),
-        })
-            .then((response) => response.json())
-            .then(() => {
-                closePopup();
-                loadInventory();
-            });
-    } else {
-        fetch("/inventory", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(deviceData),
-        })
-            .then((response) => response.json())
-            .then(() => {
-                closePopup();
-                loadInventory();
-            });
-    }
+  if (deviceId.value) {
+    fetch(`/inventory/${deviceId.value}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(deviceData),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        closePopup();
+        loadInventory();
+      });
+  } else {
+    fetch("/inventory", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(deviceData),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        closePopup();
+        loadInventory();
+      });
+  }
 });
 
 // Setzt die Daten im Formular für ein neues Gerät zurück
 addDeviceButton.addEventListener("click", () => {
-    deviceId.value = "";
-    deviceName.value = "";
-    serialNumber.value = "";
-    categoryId.value = "";
-    locationId.value = "";
-    status.value = "En Stock";
-    description.value = "";
+  deviceId.value = "";
+  deviceName.value = "";
+  serialNumber.value = "";
+  categoryId.value = "";
+  locationId.value = "";
+  status.value = "En Stock";
+  description.value = "";
 });
