@@ -58,4 +58,11 @@ router.get("/api/whoami", (req, res) => {
     return res.json(req.session.user);
 });
 
+// Meldet den Benutzer ab und beendet die Session
+router.get("/logout", (req, res) => {
+    req.session.destroy(() => {
+        res.redirect("/login.html");
+    });
+});
+
 module.exports = router;
