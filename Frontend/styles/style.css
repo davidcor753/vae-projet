@@ -1,0 +1,51 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+nav {
+  margin-bottom: 20px;
+}
+
+nav a {
+  margin-right: 15px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+form {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+input,
+select {
+  padding: 6px;
+  margin: 5px;
+}
+
+button {
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.login-page form {
+  width: 300px;
+}
+
+.login-page input {
+  display: block;
+  width: 100%;
+}
+
+.login-page button {
+  margin-top: 10px;
+}
