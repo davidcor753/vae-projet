@@ -9,7 +9,7 @@ router.post("/login", (req, res, next) => {
     const password = req.body.password;
  // Prüft, ob Benutzername und Passwort angegeben wurden
     if (!username || !password) {
-        return res.status(400).send("Fields are missing");
+        return res.status(400).send("Bitte füllen Sie alle Felder aus.");
     }
 // Sucht den Benutzer anhand seines Namens in der Datenbank
     const sql = "SELECT * FROM users WHERE name = ?";
@@ -20,7 +20,7 @@ router.post("/login", (req, res, next) => {
         }
 
         if (userRows.length === 0) {
-            return res.status(401).send("Login is not possible");
+            return res.status(401).send("Benutzername oder Passwort ist falsch");
         }
 
         const userFromDb = userRows[0];
@@ -34,7 +34,7 @@ router.post("/login", (req, res, next) => {
                 }
 
                 if (!passwordIsCorrect) {
-                    return res.status(401).send("Login is not possible");
+                    return res.status(401).send("Benutzername oder Passwort ist falsch");
                 }
   // Speichert den angemeldeten Benutzer in der Session
                 req.session.user = {

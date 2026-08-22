@@ -13,7 +13,7 @@ function checkAdmin(req, res, next) {
         return next();
     }
 
-    return res.status(403).json({ error: "not allowed" });
+    return res.status(403).send("Sie sind nicht berechtigt.");
 }
 
 // Export der Middleware für andere Dateien

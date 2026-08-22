@@ -85,7 +85,7 @@ router.post("/inventory", checkLogin, (req, res) => {
   const description = req.body.description;
 
   if (!name || !serialNumber) {
-    return res.status(400).json({ error: "Missing fields" });
+    return res.status(400).json({ error: "Bitte füllen Sie die erforderlichen Felder aus." });
   }
 
   const sql = `
@@ -125,7 +125,7 @@ router.put("/inventory/:id", checkLogin, (req, res) => {
   const description = req.body.description;
 
   if (!name || !serialNumber || !status) {
-    return res.status(400).json({ error: "Missing fields" });
+    return res.status(400).json({ error: "Bitte füllen Sie die erforderlichen Felder aus." });
   }
 
   const sql = `

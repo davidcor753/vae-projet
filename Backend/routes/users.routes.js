@@ -23,7 +23,7 @@ router.post("/users", checkLogin, checkAdmin, (req, res) => {
   const role = req.body.role;
 
   if (!name || !password || !role) {
-    return res.status(400).json({ error: "Missing fields" });
+    return res.status(400).json({ error: "Bitte füllen Sie alle erforderlichen Felder aus." });
   }
 
   if (role !== "admin" && role !== "user") {
@@ -52,7 +52,7 @@ router.put("/users/:id", checkLogin, checkAdmin, (req, res) => {
     const role = req.body.role;
 
     if (role !== "admin" && role !== "user") {
-        return res.status(400).json({ error: "Invalid role" });
+        return res.status(400).json({ error: "Ungültige Benutzerrolle" });
     }
 
     const sql = "UPDATE users SET role = ? WHERE id = ?";
