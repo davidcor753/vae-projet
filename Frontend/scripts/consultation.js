@@ -37,17 +37,17 @@ fetch("/api/whoami")
     if (user.role === "admin") {
       document.getElementById("users-link").style.display = "inline";
     }
-// Lädt die Statistik der Geräte aus dem Backend
-fetch("/inventory/statistics")
-  .then((response) => response.json())
-  .then((data) => {
-    const statistics = document.getElementById("statistics");
+     });
+    // Lädt die Statistik der Geräte aus dem Backend
+    fetch("/inventory/statistics")
+      .then((response) => response.json())
+      .then((data) => {
+        const statistics = document.getElementById("statistics");
 
-    data.forEach((item) => {
-      statistics.innerHTML += `
+        data.forEach((item) => {
+          statistics.innerHTML += `
         <p>${item.status}: ${item.anzahl}</p>
       `;
-    });
-  });
+        });
+      });
 
-  });
