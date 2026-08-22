@@ -175,4 +175,21 @@ router.delete("/inventory/:id", checkLogin, (req, res) => {
   });
 });
 
+// Lädt die Anzahl der Geräte pro Status
+router.get("/inventory/statistics", checkLogin, (req, res) => {
+  const sql = `
+    SELECT status, COUNT(*) AS anzahl
+    FROM items
+    GROUP BY status
+  `;
+
+  db.query(sql, (dbError, rows) => {
+    if (dbError) {
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    return res.json(rows);
+  });
+});
+
 module.exports = router;
