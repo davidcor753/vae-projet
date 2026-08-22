@@ -3,6 +3,7 @@ const session = require("express-session");
 const path = require("path");
 const config = require("./config/env");
 const { connectDb } = require("./config/db");
+const { checkLogin, checkAdmin } = require("./middleware/auth");
 const authRoutes = require("./routes/auth.routes");
 const usersRoutes = require("./routes/users.routes");
 const inventoryRoutes = require("./routes/inventory.routes");
@@ -18,6 +19,20 @@ app.use(
 
 // Liest die Daten aus HTML-Formularen
 app.use(express.urlencoded({ extended: true }));
+// Schützt die Inventarseite vor nicht angemeldeten Benutzern
+app.get("/index.html", checkLogin, (req, res) => {
+    res.sendFile(path.join(__dirname, "../Frontend/index.html"));
+});
+
+// Schützt die Historienseite vor nicht angemeldeten Benutzern
+app.get("/consultation.html", checkLogin, (req, res) => {
+    res.sendFile(path.join(__dirname, "../Frontend/consultation.html"));
+});
+
+// Erlaubt den Zugriff auf die Benutzerverwaltung nur Administratoren
+app.get("/users.html", checkLogin, checkAdmin, (req, res) => {
+    res.sendFile(path.join(__dirname, "../Frontend/users.html"));
+});
 
 // Liest die JSON-Daten aus den Anfragen
 app.use(express.json());
