@@ -19,6 +19,7 @@
 </nav>
 
     <h2>Geräte</h2>
+    <p id="inventory-message"></p>
 
     <!-- Setzt das Formular für ein neues Gerät zurück -->
     <button type="button" id="add-device">Neues Gerät hinzufügen</button>
@@ -42,7 +43,7 @@
     </table>
 
     <!-- Formular zum Erstellen und Bearbeiten eines Geräts -->
-   <h2>Neues Gerät</h2>
+   <h2 id="form-title">Neues Gerät</h2>
 
     <form id="device-form">
       <input type="hidden" id="device-id" />
@@ -90,6 +91,7 @@
       <input type="text" id="description" />
 
       <button type="submit">Speichern</button>
+      <button type="button" id="cancel-edit" hidden>Abbrechen</button>
     </form>
 
     <script src="scripts/inventory.js"></script>

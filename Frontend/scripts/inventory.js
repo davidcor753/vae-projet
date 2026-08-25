@@ -9,6 +9,9 @@ const status = document.getElementById("status");
 const description = document.getElementById("description");
 const deviceId = document.getElementById("device-id");
 const addDeviceButton = document.getElementById("add-device");
+const formTitle = document.getElementById("form-title");
+const cancelEditButton = document.getElementById("cancel-edit");
+const inventoryMessage = document.getElementById("inventory-message");
 
 // Zeigt die geladenen Inventargeräte in der Tabelle an
 function renderInventory(data) {
@@ -39,6 +42,7 @@ function renderInventory(data) {
     // Füllt das Formular mit den Daten des ausgewählten Geräts
     const editButton = row.querySelector(".edit-btn");
     const deleteButton = row.querySelector(".delete-btn");
+
     editButton.addEventListener("click", () => {
       deviceId.value = device.id;
       deviceName.value = device.name;
@@ -47,7 +51,11 @@ function renderInventory(data) {
       locationId.value = device.location_id;
       status.value = device.status;
       description.value = device.description;
+
+      formTitle.textContent = "Gerät bearbeiten";
+      cancelEditButton.hidden = false;
     });
+
     // Löscht das ausgewählte Gerät nach Bestätigung
     deleteButton.addEventListener("click", () => {
       const confirmed = confirm("Möchtest du dieses Gerät wirklich löschen?");
@@ -57,11 +65,18 @@ function renderInventory(data) {
           method: "DELETE",
         })
           .then((response) => response.json())
-          .then(() => {
-            loadInventory();
+          .then((data) => {
+            if (data.success) {
+              loadInventory();
+              inventoryMessage.textContent = "Gerät wurde gelöscht.";
+            } else {
+              inventoryMessage.textContent =
+                "Gerät konnte nicht gelöscht werden.";
+            }
           });
       }
     });
+
     inventoryTableBody.appendChild(row);
   });
 }
@@ -99,8 +114,14 @@ deviceForm.addEventListener("submit", (event) => {
       body: JSON.stringify(deviceData),
     })
       .then((response) => response.json())
-      .then(() => {
-        loadInventory();
+      .then((data) => {
+        if (data.success) {
+          loadInventory();
+          inventoryMessage.textContent = "Gerät wurde aktualisiert.";
+        } else {
+          inventoryMessage.textContent =
+            "Gerät konnte nicht aktualisiert werden.";
+        }
       });
   } else {
     fetch("/inventory", {
@@ -111,8 +132,13 @@ deviceForm.addEventListener("submit", (event) => {
       body: JSON.stringify(deviceData),
     })
       .then((response) => response.json())
-      .then(() => {
-        loadInventory();
+      .then((data) => {
+        if (data.success) {
+          loadInventory();
+          inventoryMessage.textContent = "Gerät wurde erstellt.";
+        } else {
+          inventoryMessage.textContent = "Gerät konnte nicht erstellt werden.";
+        }
       });
   }
 });
@@ -126,7 +152,25 @@ addDeviceButton.addEventListener("click", () => {
   locationId.value = "";
   status.value = "En Stock";
   description.value = "";
+
+  formTitle.textContent = "Neues Gerät";
+  cancelEditButton.hidden = true;
 });
+
+// Bricht die Bearbeitung ab und leert das Formular
+cancelEditButton.addEventListener("click", () => {
+  deviceId.value = "";
+  deviceName.value = "";
+  serialNumber.value = "";
+  categoryId.value = "";
+  locationId.value = "";
+  status.value = "En Stock";
+  description.value = "";
+
+  formTitle.textContent = "Neues Gerät";
+  cancelEditButton.hidden = true;
+});
+
 // Zeigt die Benutzerverwaltung nur für Administratoren an
 fetch("/api/whoami")
   .then((response) => response.json())

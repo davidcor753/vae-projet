@@ -3,6 +3,7 @@ const userForm = document.getElementById("user-form");
 const userName = document.getElementById("user-name");
 const userPassword = document.getElementById("user-password");
 const userRole = document.getElementById("user-role");
+const userMessage = document.getElementById("user-message");
 
 // Zeigt die geladenen Benutzer in der Tabelle an
 function renderUsers(data) {
@@ -44,8 +45,15 @@ function renderUsers(data) {
         body: JSON.stringify(userData),
       })
         .then((response) => response.json())
-        .then(() => {
-          loadUsers();
+        .then((data) => {
+          if (data.success) {
+            loadUsers();
+            userMessage.textContent = "Benutzerrolle wurde aktualisiert.";
+          } else {
+            loadUsers();
+            userMessage.textContent =
+              "Benutzerrolle konnte nicht aktualisiert werden.";
+          }
         });
     });
 
@@ -60,8 +68,14 @@ function renderUsers(data) {
           method: "DELETE",
         })
           .then((response) => response.json())
-          .then(() => {
-            loadUsers();
+          .then((data) => {
+            if (data.success) {
+              loadUsers();
+              userMessage.textContent = "Benutzer wurde gelöscht.";
+            } else {
+              userMessage.textContent =
+                "Benutzer konnte nicht gelöscht werden.";
+            }
           });
       }
     });
@@ -99,11 +113,17 @@ userForm.addEventListener("submit", (event) => {
     body: JSON.stringify(userData),
   })
     .then((response) => response.json())
-    .then(() => {
-      loadUsers();
+    .then((data) => {
+      if (data.success) {
+        loadUsers();
 
-      userName.value = "";
-      userPassword.value = "";
-      userRole.value = "user";
+        userName.value = "";
+        userPassword.value = "";
+        userRole.value = "user";
+
+        userMessage.textContent = "Benutzer wurde erstellt.";
+      } else {
+        userMessage.textContent = "Benutzer konnte nicht erstellt werden.";
+      }
     });
 });
