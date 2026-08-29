@@ -68,6 +68,20 @@ function renderInventory(data) {
           .then((data) => {
             if (data.success) {
               loadInventory();
+
+              if (deviceId.value == device.id) {
+                deviceId.value = "";
+                deviceName.value = "";
+                serialNumber.value = "";
+                categoryId.value = "";
+                locationId.value = "";
+                status.value = "En Stock";
+                description.value = "";
+
+                formTitle.textContent = "Neues Gerät";
+                cancelEditButton.hidden = true;
+              }
+
               inventoryMessage.textContent = "Gerät wurde gelöscht.";
             } else {
               inventoryMessage.textContent =
@@ -123,6 +137,18 @@ deviceForm.addEventListener("submit", (event) => {
       .then((data) => {
         if (data.success) {
           loadInventory();
+
+          deviceId.value = "";
+          deviceName.value = "";
+          serialNumber.value = "";
+          categoryId.value = "";
+          locationId.value = "";
+          status.value = "En Stock";
+          description.value = "";
+
+          formTitle.textContent = "Neues Gerät";
+          cancelEditButton.hidden = true;
+
           inventoryMessage.textContent = "Gerät wurde aktualisiert.";
         } else {
           inventoryMessage.textContent = data.error;
@@ -143,6 +169,14 @@ deviceForm.addEventListener("submit", (event) => {
       .then((data) => {
         if (data.success) {
           loadInventory();
+
+          deviceName.value = "";
+          serialNumber.value = "";
+          categoryId.value = "";
+          locationId.value = "";
+          status.value = "En Stock";
+          description.value = "";
+
           inventoryMessage.textContent = "Gerät wurde erstellt.";
         } else {
           inventoryMessage.textContent = data.error;
