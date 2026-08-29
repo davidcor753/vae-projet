@@ -3,6 +3,7 @@ const { db } = require("../config/db");
 const { checkLogin } = require("../middleware/auth");
 
 const router = express.Router();
+
 // Speichert eine Inventar-Aktion in der Historie
 function logInventoryAction(itemId, actionType, req) {
   const sql = `
@@ -85,7 +86,9 @@ router.post("/inventory", checkLogin, (req, res) => {
   const description = req.body.description;
 
   if (!name || !serialNumber) {
-    return res.status(400).json({ error: "Bitte füllen Sie die erforderlichen Felder aus." });
+    return res.status(400).json({
+      error: "Bitte füllen Sie die erforderlichen Felder aus.",
+    });
   }
 
   const sql = `
@@ -100,6 +103,12 @@ router.post("/inventory", checkLogin, (req, res) => {
     (dbError, result) => {
       if (dbError) {
         console.error("POST /inventory database error:", dbError);
+
+        if (dbError.code === "ER_DUP_ENTRY") {
+          return res.status(400).json({
+            error: "Diese Seriennummer existiert bereits.",
+          });
+        }
 
         return res.status(500).json({
           error: "Database error",
@@ -125,7 +134,9 @@ router.put("/inventory/:id", checkLogin, (req, res) => {
   const description = req.body.description;
 
   if (!name || !serialNumber || !status) {
-    return res.status(400).json({ error: "Bitte füllen Sie die erforderlichen Felder aus." });
+    return res.status(400).json({
+      error: "Bitte füllen Sie die erforderlichen Felder aus.",
+    });
   }
 
   const sql = `
@@ -144,6 +155,12 @@ router.put("/inventory/:id", checkLogin, (req, res) => {
     [name, serialNumber, categoryId, locationId, status, description, id],
     (dbError) => {
       if (dbError) {
+        if (dbError.code === "ER_DUP_ENTRY") {
+          return res.status(400).json({
+            error: "Diese Seriennummer existiert bereits.",
+          });
+        }
+
         return res.status(500).json({
           error: "Database error",
         });

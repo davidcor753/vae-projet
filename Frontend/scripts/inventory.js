@@ -119,8 +119,7 @@ deviceForm.addEventListener("submit", (event) => {
           loadInventory();
           inventoryMessage.textContent = "Gerät wurde aktualisiert.";
         } else {
-          inventoryMessage.textContent =
-            "Gerät konnte nicht aktualisiert werden.";
+          inventoryMessage.textContent = data.error;
         }
       });
   } else {
@@ -137,7 +136,7 @@ deviceForm.addEventListener("submit", (event) => {
           loadInventory();
           inventoryMessage.textContent = "Gerät wurde erstellt.";
         } else {
-          inventoryMessage.textContent = "Gerät konnte nicht erstellt werden.";
+          inventoryMessage.textContent = data.error;
         }
       });
   }
