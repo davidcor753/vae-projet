@@ -54,6 +54,9 @@ function renderUsers(data) {
             userMessage.textContent =
               "Benutzerrolle konnte nicht aktualisiert werden.";
           }
+        })
+        .catch(() => {
+          userMessage.textContent = "Ein Fehler ist aufgetreten.";
         });
     });
 
@@ -76,6 +79,9 @@ function renderUsers(data) {
               userMessage.textContent =
                 "Benutzer konnte nicht gelöscht werden.";
             }
+          })
+          .catch(() => {
+            userMessage.textContent = "Ein Fehler ist aufgetreten.";
           });
       }
     });
@@ -90,6 +96,9 @@ function loadUsers() {
     .then((response) => response.json())
     .then((data) => {
       renderUsers(data);
+    })
+    .catch(() => {
+      userMessage.textContent = "Ein Fehler ist aufgetreten.";
     });
 }
 
@@ -125,5 +134,8 @@ userForm.addEventListener("submit", (event) => {
       } else {
         userMessage.textContent = "Benutzer konnte nicht erstellt werden.";
       }
+    })
+    .catch(() => {
+      userMessage.textContent = "Ein Fehler ist aufgetreten.";
     });
 });

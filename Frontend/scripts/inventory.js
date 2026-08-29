@@ -73,6 +73,9 @@ function renderInventory(data) {
               inventoryMessage.textContent =
                 "Gerät konnte nicht gelöscht werden.";
             }
+          })
+          .catch(() => {
+            inventoryMessage.textContent = "Ein Fehler ist aufgetreten.";
           });
       }
     });
@@ -87,6 +90,9 @@ function loadInventory() {
     .then((response) => response.json())
     .then((data) => {
       renderInventory(data);
+    })
+    .catch(() => {
+      inventoryMessage.textContent = "Ein Fehler ist aufgetreten.";
     });
 }
 
@@ -121,6 +127,9 @@ deviceForm.addEventListener("submit", (event) => {
         } else {
           inventoryMessage.textContent = data.error;
         }
+      })
+      .catch(() => {
+        inventoryMessage.textContent = "Ein Fehler ist aufgetreten.";
       });
   } else {
     fetch("/inventory", {
@@ -138,6 +147,9 @@ deviceForm.addEventListener("submit", (event) => {
         } else {
           inventoryMessage.textContent = data.error;
         }
+      })
+      .catch(() => {
+        inventoryMessage.textContent = "Ein Fehler ist aufgetreten.";
       });
   }
 });
@@ -177,4 +189,7 @@ fetch("/api/whoami")
     if (user.role === "admin") {
       document.getElementById("users-link").style.display = "inline";
     }
+  })
+  .catch(() => {
+    inventoryMessage.textContent = "Ein Fehler ist aufgetreten.";
   });
