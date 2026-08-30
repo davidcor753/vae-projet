@@ -85,7 +85,7 @@ router.post("/inventory", checkLogin, (req, res) => {
   const status = req.body.status || "En Stock";
   const description = req.body.description;
 
-  if (!name || !serialNumber) {
+  if (!name || !serialNumber || !categoryId || !locationId) {
     return res.status(400).json({
       error: "Bitte füllen Sie die erforderlichen Felder aus.",
     });
@@ -133,7 +133,7 @@ router.put("/inventory/:id", checkLogin, (req, res) => {
   const status = req.body.status;
   const description = req.body.description;
 
-  if (!name || !serialNumber || !status) {
+  if (!name || !serialNumber || !categoryId || !locationId || !status) {
     return res.status(400).json({
       error: "Bitte füllen Sie die erforderlichen Felder aus.",
     });
