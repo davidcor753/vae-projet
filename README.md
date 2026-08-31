@@ -117,4 +117,3 @@ Nach erfolgreicher Anmeldung wird die Inventarverwaltung geöffnet.
 * **User:** Kann die Inventarverwaltung und die Inventarhistorie verwenden.
 * **Admin:** Verfügt zusätzlich über Zugriff auf die Benutzerverwaltung und kann Benutzer erstellen, Rollen ändern und Benutzer löschen.
 
-https://readme.so/editor
