@@ -27,7 +27,7 @@ router.post("/users", checkLogin, checkAdmin, (req, res) => {
   }
 
   if (role !== "admin" && role !== "user") {
-    return res.status(400).json({ error: "Invalid role" });
+    return res.status(400).json({ error: "Ungültige Benutzerrolle" });
   }
   bcrypt.hash(password, 10, (bcryptError, hashedPassword) => {
     if (bcryptError) {
